@@ -4,7 +4,7 @@
 #include "malloc.h"
 #endif
 
-Image Grid::TileTypeToImage[TileType::End]
+std::vector<Image> Grid::ToImage =
 {
     Image("../assets/empty.png"),
     Image("../assets/grass.png"),
@@ -21,7 +21,7 @@ Grid::Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighli
     this->xOffset = 0;
     this->yOffset = 0;
 
-    grid = (TileType*) malloc(width * height * sizeof(TileType));
+    grid = (int*) malloc(width * height * sizeof(int));
     highlightGrid = (bool*) malloc(width * height * sizeof(bool));
 
     hasBeenHighlighted = false;
@@ -51,7 +51,7 @@ void Grid::Draw(Window& window)
 {
     for (uint32_t i = 0; i < width * height; i++)
     {
-        window.DrawImage(TileTypeToImage[grid[i]], xOffset + (i % width * tileSize), yOffset + (i / width * tileSize), Pivot::TopLeft);
+        window.DrawImage(ToImage[grid[i]], xOffset + (i % width * tileSize), yOffset + (i / width * tileSize), Pivot::TopLeft);
     }
 
     if (hasBeenHighlighted)
@@ -80,7 +80,7 @@ void Grid::Clear()
 {
     for (uint32_t i = 0; i < width * height; i++)
     {
-        grid[i] = TileType::Empty;
+        grid[i] = 0;
     }
 }
 
@@ -133,7 +133,7 @@ void Grid::HighlightTile(Vector2I position, Image image, bool local)
     highlightImage = image;
 }
 
-void Grid::DrawTile(Vector2I position, TileType tileType, bool local)
+void Grid::DrawTile(Vector2I position, int tileType, bool local)
 {
     const uint32_t gridPosition = ToGridPosition(position, local);
 
@@ -158,7 +158,7 @@ Grid::~Grid()
     free(highlightGrid);
 }
 
-TileType Grid::GetTile(Vector2I position, bool local) const
+int Grid::GetTile(Vector2I position, bool local) const
 {
     const uint32_t gridPosition = ToGridPosition(position, local);
 
@@ -170,7 +170,7 @@ TileType Grid::GetTile(Vector2I position, bool local) const
 
     if (gridPosition >= width * height || position.X / tileSize >= width || position.Y / tileSize >= height)
     {
-        return TileType::End;
+        return ToImage.size();
     }
 
     return grid[gridPosition];
@@ -178,7 +178,7 @@ TileType Grid::GetTile(Vector2I position, bool local) const
 
 bool Grid::IsOnTile(Vector2I position, bool local) const
 {
-    return GetTile(position, local) != TileType::End;
+    return GetTile(position, local) != ToImage.size();
 }
 
 void Grid::SetXOffset(int value)

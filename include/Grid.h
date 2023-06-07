@@ -1,16 +1,8 @@
 #pragma once
 
-#include "engine/Vector.h"
-#include "engine/Window.h"
-
-enum TileType
-{
-    Empty = 0,
-    Grass,
-    Dirt,
-    Block,
-    End
-};
+#include <vector>
+#include "Vector.h"
+#include "Window.h"
 
 class Grid
 {
@@ -25,18 +17,18 @@ private:
     int xOffset;
     int yOffset;
 
-    TileType* grid;
+    int* grid;
     bool* highlightGrid;
 
     bool hasBeenHighlighted;
     int defaultHighlightColor;
     Image highlightImage;
-    bool useHighlightImage;
+    bool useHighlightImage { false };
 
     [[nodiscard]] uint32_t ToGridPosition(Vector2I position, bool local = true) const;
 
 public:
-    static Image TileTypeToImage[TileType::End];
+    static std::vector<Image> ToImage;
 
     void Draw(Window& window);
 
@@ -45,9 +37,9 @@ public:
 
     void HighlightTile(Vector2I position, bool local = true);
     void HighlightTile(Vector2I position, Image image, bool local = true);
-    void DrawTile(Vector2I position, TileType tileType, bool local = true);
+    void DrawTile(Vector2I position, int tileType, bool local = true);
 
-    [[nodiscard]] TileType GetTile(Vector2I position, bool local = true) const;
+    [[nodiscard]] int GetTile(Vector2I position, bool local = true) const;
     [[nodiscard]] bool IsOnTile(Vector2I position, bool local = true) const;
     void SetXOffset(int value);
     void SetYOffset(int value);

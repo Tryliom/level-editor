@@ -7,9 +7,8 @@ project("level-editor" VERSION 0.1 DESCRIPTION "Course")
 # Set C++ version
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
-
 # Include all cpp and h files
-file(GLOB_RECURSE SRC src/*.cpp include/*.h)
+file(GLOB_RECURSE SRC src/*.cpp include/*.h libs/Basic/src/*.cpp libs/Basic/include/*.h)
 
 # Add executable
 add_executable(${PROJECT_NAME} ${SRC})
@@ -17,6 +16,7 @@ add_executable(${PROJECT_NAME} ${SRC})
 # Include libraries
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/include/)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/)
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/libs/Basic/include/)
 
 if(APPLE)
     target_link_libraries(${PROJECT_NAME} ${CMAKE_CURRENT_SOURCE_DIR}/libs/mac-x64/libminifb.a)

@@ -1,15 +1,15 @@
-#include "engine/Window.h"
-#include "engine/Utility.h"
-#include "engine/Input.h"
+#include "Window.h"
+#include "Utility.h"
+#include "Input.h"
 
 #include "Grid.h"
 
-Image SelectedImages[TileType::End]
+std::vector<Image> SelectedImages =
 {
-    Image("../assets/empty.png"),
-    Image("../assets/grass.png"),
-    Image("../assets/dirt.png"),
-    Image("../assets/block.png")
+	Image("../assets/empty.png"),
+	Image("../assets/grass.png"),
+	Image("../assets/dirt.png"),
+	Image("../assets/block.png")
 };
 
 const uint32_t width = 1000;
@@ -17,12 +17,12 @@ const uint32_t height = 640;
 const uint32_t gridWidth = 20;
 const uint32_t gridHeight = 20;
 const uint32_t tileSize = 32;
-auto selectedTile = Empty;
+int selectedTile;
 Image selectedTileImage;
 
 Window window(width, height);
 Grid grid(gridWidth, gridHeight, tileSize);
-Grid tileSelector(TileType::End, 1, tileSize, Utility::ToColor(255, 100, 100));
+Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100));
 
 int main()
 {
@@ -34,9 +34,9 @@ int main()
     selectedTileImage = SelectedImages[selectedTile];
     tileSelector.SetXOffset(gridWidth * tileSize);
 
-    for (int i = 0; i < (int) TileType::End; i++)
+    for (int i = 0; i < Grid::ToImage.size(); i++)
     {
-        tileSelector.DrawTile(Vector2I(i * tileSize, 0), (TileType) i);
+        tileSelector.DrawTile(Vector2I(i * tileSize, 0), i);
     }
 
     do {
@@ -64,7 +64,7 @@ int main()
             }
             else if (Input::IsMouseButtonHeld(MOUSE_RIGHT))
             {
-                grid.DrawTile(mousePosition, Empty);
+                grid.DrawTile(mousePosition, 0);
             }
         }
 
