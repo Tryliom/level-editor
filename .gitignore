@@ -1,0 +1,9 @@
+bin/game.exe
+bin/game.js
+bin/game.wasm
+bin/game.data
+bin/game.js.mem
+cmake-build-debug
+cmake-build-web
+.idea
+.vs
