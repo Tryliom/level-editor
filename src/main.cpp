@@ -3,7 +3,7 @@
 
 int main()
 {
-    const uint32_t width = 640;
+    const uint32_t width = 1000;
     const uint32_t height = 640;
 
     Window window(width, height);

@@ -25,13 +25,10 @@ const uint32_t tileSize = 32;
 int selectedTile;
 Image selectedTileImage;
 
-Grid grid(gridWidth, gridHeight, tileSize);
-Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100));
-
-Editor::Editor() : Display(width, height)
+Editor::Editor() : Display(width, height), _grid(gridWidth, gridHeight, tileSize), _tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100))
 {
-    grid.EnableHistory();
-    grid.AddToHistory();
+    _grid.EnableHistory();
+    _grid.AddToHistory();
 
     for (auto & SelectedImage : SelectedImages)
     {
@@ -39,11 +36,11 @@ Editor::Editor() : Display(width, height)
     }
 
     selectedTileImage = SelectedImages[selectedTile];
-    tileSelector.SetXOffset(gridWidth * tileSize);
+    _tileSelector.SetXOffset(gridWidth * tileSize);
 
     for (int i = 0; i < Grid::ToImage.size(); i++)
     {
-        tileSelector.DrawTile(Vector2I(i * tileSize, 0), i);
+        _tileSelector.DrawTile(Vector2I(i * tileSize, 0), i);
     }
 }
 
@@ -51,29 +48,29 @@ void Editor::Update(Window& window)
 {
     auto mousePosition = window.GetMousePosition();
 
-    if (tileSelector.IsOnTile(mousePosition, false))
+    if (_tileSelector.IsOnTile(mousePosition, false))
     {
-        grid.ClearHighlighted();
-        tileSelector.HighlightTile(mousePosition, false);
+        _grid.ClearHighlighted();
+        _tileSelector.HighlightTile(mousePosition, false);
 
         if (Input::IsMouseButtonPressed(MOUSE_LEFT))
         {
-            selectedTile = tileSelector.GetTile(mousePosition, false);
+            selectedTile = _tileSelector.GetTile(mousePosition, false);
             selectedTileImage = SelectedImages[selectedTile];
         }
     }
     else
     {
-        tileSelector.ClearHighlighted();
-        grid.HighlightTile(mousePosition, selectedTileImage);
+        _tileSelector.ClearHighlighted();
+        _grid.HighlightTile(mousePosition, selectedTileImage);
 
         if (Input::IsMouseButtonHeld(MOUSE_LEFT))
         {
-            grid.DrawTile(mousePosition, selectedTile);
+            _grid.DrawTile(mousePosition, selectedTile);
         }
         else if (Input::IsMouseButtonHeld(MOUSE_RIGHT))
         {
-            grid.DrawTile(mousePosition, 0);
+            _grid.DrawTile(mousePosition, 0);
         }
     }
 
@@ -81,19 +78,19 @@ void Editor::Update(Window& window)
     {
         if (Input::IsKeyPressed(KB_KEY_S))
         {
-            grid.Serialize("../assets/levels/level.level", Save);
+            _grid.Serialize("../assets/levels/level.level", Save);
         }
         else if (Input::IsKeyPressed(KB_KEY_L))
         {
-            grid.Serialize("../assets/levels/level.level", Load);
+            _grid.Serialize("../assets/levels/level.level", Load);
         }
         else if (Input::IsKeyPressed(KB_KEY_Y))
         {
-            grid.Undo();
+            _grid.Undo();
         }
     }
 
-    tileSelector.HighlightTile(Vector2I(selectedTile * tileSize, 0), true);
+    _tileSelector.HighlightTile(Vector2I(selectedTile * tileSize, 0), true);
 
     if (Input::IsKeyPressed(KB_KEY_ESCAPE))
     {
@@ -104,6 +101,6 @@ void Editor::Update(Window& window)
 void Editor::Draw(Window& window)
 {
     window.SetBackgroundColor(Color::Black);
-    grid.Draw(window);
-    tileSelector.Draw(window);
+    _grid.Draw(window);
+    _tileSelector.Draw(window);
 }
