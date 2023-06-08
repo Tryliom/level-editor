@@ -3,29 +3,31 @@
 #include "Input.h"
 
 #include "Grid.h"
-
-std::vector<Image> SelectedImages =
-{
-	Image("../assets/empty.png"),
-	Image("../assets/grass.png"),
-	Image("../assets/dirt.png"),
-	Image("../assets/block.png")
-};
-
-const uint32_t width = 1000;
-const uint32_t height = 640;
-const uint32_t gridWidth = 20;
-const uint32_t gridHeight = 20;
-const uint32_t tileSize = 32;
-int selectedTile;
-Image selectedTileImage;
-
-Window window(width, height);
-Grid grid(gridWidth, gridHeight, tileSize);
-Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100));
+#include "Logger.h"
 
 int main()
 {
+    std::vector<Image> SelectedImages =
+    {
+        Image("../assets/empty.png"),
+        Image("../assets/grass.png"),
+        Image("../assets/dirt.png"),
+        Image("../assets/block.png")
+    };
+
+    const uint32_t width = 1000;
+    const uint32_t height = 640;
+    const uint32_t gridWidth = 20;
+    const uint32_t gridHeight = 20;
+    const uint32_t tileSize = 32;
+    int selectedTile;
+    Image selectedTileImage;
+
+
+    Window window(width, height);
+    Grid grid(gridWidth, gridHeight, tileSize);
+    Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100));
+
     grid.EnableHistory();
     grid.AddToHistory();
 
@@ -43,6 +45,8 @@ int main()
     }
 
     do {
+        printf("Frame: \n");
+
         auto mousePosition = window.GetMousePosition();
 
         if (tileSelector.IsOnTile(mousePosition, false))

@@ -2,19 +2,20 @@
 
 #if defined(_WIN32)
 #include "malloc.h"
-#include "Logger.h"
 #endif
 
-std::vector<Image> Grid::ToImage =
-{
-    Image("../assets/empty.png"),
-    Image("../assets/grass.png"),
-    Image("../assets/dirt.png"),
-    Image("../assets/block.png")
-};
+std::vector<Image> Grid::ToImage;
 
 Grid::Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighlightColor)
 {
+    Grid::ToImage =
+    {
+        Image("../assets/empty.png"),
+        Image("../assets/grass.png"),
+        Image("../assets/dirt.png"),
+        Image("../assets/block.png")
+    };
+
     this->_width = width;
     this->_height = height;
     this->_tileSize = tileSize;
