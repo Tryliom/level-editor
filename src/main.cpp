@@ -3,7 +3,6 @@
 #include "Input.h"
 
 #include "Grid.h"
-#include "Logger.h"
 
 std::vector<Image> SelectedImages =
 {
@@ -71,7 +70,7 @@ int main()
             }
         }
 
-        if (Input::IsKeyHeld(KB_KEY_LEFT_CONTROL))
+        if (Input::IsKeyHeld(KB_KEY_RIGHT_CONTROL) || Input::IsKeyHeld(KB_KEY_LEFT_CONTROL))
         {
             if (Input::IsKeyPressed(KB_KEY_S))
             {

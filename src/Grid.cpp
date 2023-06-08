@@ -50,26 +50,6 @@ uint32_t Grid::ToGridPosition(Vector2I position, bool local) const
     return (uint32_t) (position.X / _tileSize) + (uint32_t) (position.Y / _tileSize) * _width;
 }
 
-void Grid::AddToHistory()
-{
-    if (_historyIndex == 99)
-    {
-        for (uint32_t i = 0; i < 99; i++)
-        {
-            _history[i] = _history[i + 1];
-        }
-    }
-
-    // Make a copy of the grid
-    _history[_historyIndex] = (int*) malloc(_width * _height * sizeof(int));
-    memcpy(_history[_historyIndex], _grid, _width * _height * sizeof(int));
-
-    if (_historyIndex < 99)
-    {
-        _historyIndex++;
-    }
-}
-
 void Grid::Draw(Window& window)
 {
     for (uint32_t i = 0; i < _width * _height; i++)
@@ -172,18 +152,9 @@ void Grid::DrawTile(Vector2I position, int tileType, bool local)
         return;
     }
 
-    if (_saveHistory)
-    {
-        AddToHistory();
-    }
+    AddToHistory();
 
     _grid[gridPosition] = tileType;
-}
-
-Grid::~Grid()
-{
-    free(_grid);
-    free(_highlightGrid);
 }
 
 int Grid::GetTile(Vector2I position, bool local) const
@@ -266,4 +237,43 @@ void Grid::Undo()
     _historyIndex--;
 
     memcpy(_grid, _history[_historyIndex], _width * _height * sizeof(int));
+}
+
+void Grid::AddToHistory()
+{
+    if (!_saveHistory) return;
+
+    // Check if the last history is the same as the current grid
+    if (_historyIndex > 0)
+    {
+        bool isSame = true;
+
+        for (uint32_t i = 0; i < _width * _height; i++)
+        {
+            if (_history[_historyIndex - 1][i] != _grid[i])
+            {
+                isSame = false;
+                break;
+            }
+        }
+
+        if (isSame) return;
+    }
+
+    if (_historyIndex == _maxHistory - 1)
+    {
+        for (uint32_t i = 0; i < _maxHistory - 1; i++)
+        {
+            _history[i] = _history[i + 1];
+        }
+    }
+
+    // Make a copy of the grid
+    _history[_historyIndex] = (int*) malloc(_width * _height * sizeof(int));
+    memcpy(_history[_historyIndex], _grid, _width * _height * sizeof(int));
+
+    if (_historyIndex < _maxHistory - 1)
+    {
+        _historyIndex++;
+    }
 }

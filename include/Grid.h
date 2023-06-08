@@ -14,7 +14,6 @@ class Grid
 {
 public:
     Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighlightColor = Utility::ToColor(0, 200, 100));
-    ~Grid();
 
 private:
     uint32_t _width;
@@ -32,11 +31,11 @@ private:
     bool _useHighlightImage { false };
 
     bool _saveHistory { false };
-    int* _history[100]{};
+    int _maxHistory { 200 };
+    int* _history[200]{};
     int _historyIndex { 0 };
 
     [[nodiscard]] uint32_t ToGridPosition(Vector2I position, bool local = true) const;
-    void AddToHistory();
 
 public:
     static std::vector<Image> ToImage;
@@ -58,6 +57,7 @@ public:
 
     void EnableHistory();
     void Undo();
+    void AddToHistory();
 
     void Serialize(const std::string& path, SerializeMode mode);
 };
