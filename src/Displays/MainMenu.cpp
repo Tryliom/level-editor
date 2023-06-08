@@ -4,7 +4,6 @@
 #include "Displays/SnakeGame.h"
 #include "Displays/Editor.h"
 #include "Window.h"
-#include "Logger.h"
 
 const uint32_t width = 640;
 const uint32_t height = 640;
@@ -15,8 +14,6 @@ void MainMenu::Update(Window& window)
 {
     if (Input::IsKeyPressed(KB_KEY_1))
     {
-        LOG("Starting Snake");
-
         window.SetDisplay(new SnakeGame());
     }
     else if (Input::IsKeyPressed(KB_KEY_2))
