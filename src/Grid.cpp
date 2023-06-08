@@ -2,6 +2,7 @@
 
 #if defined(_WIN32)
 #include "malloc.h"
+#include "Logger.h"
 #endif
 
 std::vector<Image> Grid::ToImage =
@@ -14,18 +15,20 @@ std::vector<Image> Grid::ToImage =
 
 Grid::Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighlightColor)
 {
-    this->width = width;
-    this->height = height;
-    this->tileSize = tileSize;
+    this->_width = width;
+    this->_height = height;
+    this->_tileSize = tileSize;
 
-    this->xOffset = 0;
-    this->yOffset = 0;
+    this->_xOffset = 0;
+    this->_yOffset = 0;
 
-    grid = (int*) malloc(width * height * sizeof(int));
-    highlightGrid = (bool*) malloc(width * height * sizeof(bool));
+    _grid = (int*) malloc(width * height * sizeof(int));
+    _highlightGrid = (bool*) malloc(width * height * sizeof(bool));
 
-    hasBeenHighlighted = false;
-    this->defaultHighlightColor = defaultHighlightColor;
+    _hasBeenHighlighted = false;
+    this->_defaultHighlightColor = defaultHighlightColor;
+
+    _historyIndex = 0;
 
     Clear();
     ClearHighlighted();
@@ -35,8 +38,8 @@ uint32_t Grid::ToGridPosition(Vector2I position, bool local) const
 {
     if (!local)
     {
-        position.X -= xOffset;
-        position.Y -= yOffset;
+        position.X -= _xOffset;
+        position.Y -= _yOffset;
     }
 
     if (position.X < 0 || position.Y < 0)
@@ -44,51 +47,71 @@ uint32_t Grid::ToGridPosition(Vector2I position, bool local) const
         return 0;
     }
 
-    return (uint32_t) (position.X / tileSize) + (uint32_t) (position.Y / tileSize) * width;
+    return (uint32_t) (position.X / _tileSize) + (uint32_t) (position.Y / _tileSize) * _width;
+}
+
+void Grid::AddToHistory()
+{
+    if (_historyIndex == 99)
+    {
+        for (uint32_t i = 0; i < 99; i++)
+        {
+            _history[i] = _history[i + 1];
+        }
+    }
+
+    // Make a copy of the grid
+    _history[_historyIndex] = (int*) malloc(_width * _height * sizeof(int));
+    memcpy(_history[_historyIndex], _grid, _width * _height * sizeof(int));
+
+    if (_historyIndex < 99)
+    {
+        _historyIndex++;
+    }
 }
 
 void Grid::Draw(Window& window)
 {
-    for (uint32_t i = 0; i < width * height; i++)
+    for (uint32_t i = 0; i < _width * _height; i++)
     {
-        window.DrawImage(ToImage[grid[i]], xOffset + (i % width * tileSize), yOffset + (i / width * tileSize), Pivot::TopLeft);
+        window.DrawImage(ToImage[_grid[i]], _xOffset + (i % _width * _tileSize), _yOffset + (i / _width * _tileSize), Pivot::TopLeft);
     }
 
-    if (hasBeenHighlighted)
+    if (_hasBeenHighlighted)
     {
-        for (uint32_t i = 0; i < width * height; i++)
+        for (uint32_t i = 0; i < _width * _height; i++)
         {
-            if (highlightGrid[i])
+            if (_highlightGrid[i])
             {
-                if (useHighlightImage)
+                if (_useHighlightImage)
                 {
-                    window.DrawImage(highlightImage, xOffset + (i % width * tileSize), yOffset + (i / width * tileSize), Pivot::TopLeft);
+                    window.DrawImage(_highlightImage, _xOffset + (i % _width * _tileSize), _yOffset + (i / _width * _tileSize), Pivot::TopLeft);
                     continue;
                 }
 
-                window.DrawRectangle(xOffset + (i % width * tileSize), yOffset + (i / width * tileSize), tileSize, tileSize, defaultHighlightColor);
+                window.DrawRectangle(_xOffset + (i % _width * _tileSize), _yOffset + (i / _width * _tileSize), _tileSize, _tileSize, _defaultHighlightColor);
             }
         }
     }
 
-    hasBeenHighlighted = false;
+    _hasBeenHighlighted = false;
 
     ClearHighlighted();
 }
 
 void Grid::Clear()
 {
-    for (uint32_t i = 0; i < width * height; i++)
+    for (uint32_t i = 0; i < _width * _height; i++)
     {
-        grid[i] = 0;
+        _grid[i] = 0;
     }
 }
 
 void Grid::ClearHighlighted()
 {
-    for (uint32_t i = 0; i < width * height; i++)
+    for (uint32_t i = 0; i < _width * _height; i++)
     {
-        highlightGrid[i] = false;
+        _highlightGrid[i] = false;
     }
 }
 
@@ -98,18 +121,18 @@ void Grid::HighlightTile(Vector2I position, bool local)
 
     if (!local)
     {
-        position.X -= xOffset;
-        position.Y -= yOffset;
+        position.X -= _xOffset;
+        position.Y -= _yOffset;
     }
 
-    if (gridPosition >= width * height || position.X / tileSize >= width || position.Y / tileSize >= height)
+    if (gridPosition >= _width * _height || position.X / _tileSize >= _width || position.Y / _tileSize >= _height)
     {
         return;
     }
 
-    highlightGrid[gridPosition] = true;
-    hasBeenHighlighted = true;
-    useHighlightImage = false;
+    _highlightGrid[gridPosition] = true;
+    _hasBeenHighlighted = true;
+    _useHighlightImage = false;
 }
 
 void Grid::HighlightTile(Vector2I position, Image image, bool local)
@@ -118,19 +141,19 @@ void Grid::HighlightTile(Vector2I position, Image image, bool local)
 
     if (!local)
     {
-        position.X -= xOffset;
-        position.Y -= yOffset;
+        position.X -= _xOffset;
+        position.Y -= _yOffset;
     }
 
-    if (gridPosition >= width * height || position.X / tileSize >= width || position.Y / tileSize >= height)
+    if (gridPosition >= _width * _height || position.X / _tileSize >= _width || position.Y / _tileSize >= _height)
     {
         return;
     }
 
-    highlightGrid[gridPosition] = true;
-    hasBeenHighlighted = true;
-    useHighlightImage = true;
-    highlightImage = image;
+    _highlightGrid[gridPosition] = true;
+    _hasBeenHighlighted = true;
+    _useHighlightImage = true;
+    _highlightImage = image;
 }
 
 void Grid::DrawTile(Vector2I position, int tileType, bool local)
@@ -139,23 +162,28 @@ void Grid::DrawTile(Vector2I position, int tileType, bool local)
 
     if (!local)
     {
-        position.X -= xOffset;
-        position.Y -= yOffset;
+        position.X -= _xOffset;
+        position.Y -= _yOffset;
     }
 
-    if (grid[gridPosition] == tileType || gridPosition >= width * height
-        || position.X / tileSize >= width || position.Y / tileSize >= height)
+    if (_grid[gridPosition] == tileType || gridPosition >= _width * _height
+        || position.X / _tileSize >= _width || position.Y / _tileSize >= _height)
     {
         return;
     }
 
-    grid[gridPosition] = tileType;
+    if (_saveHistory)
+    {
+        AddToHistory();
+    }
+
+    _grid[gridPosition] = tileType;
 }
 
 Grid::~Grid()
 {
-    free(grid);
-    free(highlightGrid);
+    free(_grid);
+    free(_highlightGrid);
 }
 
 int Grid::GetTile(Vector2I position, bool local) const
@@ -164,16 +192,16 @@ int Grid::GetTile(Vector2I position, bool local) const
 
     if (!local)
     {
-        position.X -= xOffset;
-        position.Y -= yOffset;
+        position.X -= _xOffset;
+        position.Y -= _yOffset;
     }
 
-    if (gridPosition >= width * height || position.X / tileSize >= width || position.Y / tileSize >= height)
+    if (gridPosition >= _width * _height || position.X / _tileSize >= _width || position.Y / _tileSize >= _height)
     {
         return ToImage.size();
     }
 
-    return grid[gridPosition];
+    return _grid[gridPosition];
 }
 
 bool Grid::IsOnTile(Vector2I position, bool local) const
@@ -183,10 +211,59 @@ bool Grid::IsOnTile(Vector2I position, bool local) const
 
 void Grid::SetXOffset(int value)
 {
-    this->xOffset = value;
+    this->_xOffset = value;
 }
 
 void Grid::SetYOffset(int value)
 {
-    this->yOffset = value;
+    this->_yOffset = value;
+}
+
+void serializeBytes(FILE* file, SerializeMode mode, void* ptr, size_t size)
+{
+    if (mode == SerializeMode::Save)
+    {
+        fwrite(ptr, size, 1, file);
+    }
+    else
+    {
+        fread(ptr, size, 1, file);
+    }
+}
+
+void Grid::Serialize(const std::string& path, SerializeMode mode)
+{
+    FILE* file = fopen(path.c_str(), mode == SerializeMode::Save ? "wb" : "rb");
+
+    serializeBytes(file, mode, &_width, sizeof(uint32_t));
+    serializeBytes(file, mode, &_height, sizeof(uint32_t));
+
+    if (mode == SerializeMode::Load)
+    {
+        _grid = (int*) malloc(_width * _height * sizeof(int));
+        _highlightGrid = (bool*) malloc(_width * _height * sizeof(bool));
+
+        _hasBeenHighlighted = false;
+    }
+
+    serializeBytes(file, mode, _grid, sizeof(int) * _width * _height);
+
+    fclose(file);
+}
+
+void Grid::EnableHistory()
+{
+    _saveHistory = true;
+}
+
+void Grid::Undo()
+{
+    if (_historyIndex == 0 || !_saveHistory)
+    {
+        return;
+    }
+
+    _historyIndex--;
+
+    memcpy(_grid, _history[_historyIndex], _width * _height * sizeof(int));
 }

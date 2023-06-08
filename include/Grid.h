@@ -4,6 +4,12 @@
 #include "Vector.h"
 #include "Window.h"
 
+enum SerializeMode
+{
+    Save,
+    Load
+};
+
 class Grid
 {
 public:
@@ -11,21 +17,26 @@ public:
     ~Grid();
 
 private:
-    uint32_t width;
-    uint32_t height;
-    uint32_t tileSize;
-    int xOffset;
-    int yOffset;
+    uint32_t _width;
+    uint32_t _height;
+    uint32_t _tileSize;
+    int _xOffset;
+    int _yOffset;
 
-    int* grid;
-    bool* highlightGrid;
+    int* _grid;
+    bool* _highlightGrid;
 
-    bool hasBeenHighlighted;
-    int defaultHighlightColor;
-    Image highlightImage;
-    bool useHighlightImage { false };
+    bool _hasBeenHighlighted;
+    int _defaultHighlightColor;
+    Image _highlightImage;
+    bool _useHighlightImage { false };
+
+    bool _saveHistory { false };
+    int* _history[100]{};
+    int _historyIndex { 0 };
 
     [[nodiscard]] uint32_t ToGridPosition(Vector2I position, bool local = true) const;
+    void AddToHistory();
 
 public:
     static std::vector<Image> ToImage;
@@ -41,6 +52,12 @@ public:
 
     [[nodiscard]] int GetTile(Vector2I position, bool local = true) const;
     [[nodiscard]] bool IsOnTile(Vector2I position, bool local = true) const;
+
     void SetXOffset(int value);
     void SetYOffset(int value);
+
+    void EnableHistory();
+    void Undo();
+
+    void Serialize(const std::string& path, SerializeMode mode);
 };

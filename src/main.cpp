@@ -3,6 +3,7 @@
 #include "Input.h"
 
 #include "Grid.h"
+#include "Logger.h"
 
 std::vector<Image> SelectedImages =
 {
@@ -26,6 +27,8 @@ Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 
 
 int main()
 {
+    grid.EnableHistory();
+
     for (auto & SelectedImage : SelectedImages)
     {
         SelectedImage.SetColor(Utility::ToColor(255, 255, 255, 150));
@@ -65,6 +68,22 @@ int main()
             else if (Input::IsMouseButtonHeld(MOUSE_RIGHT))
             {
                 grid.DrawTile(mousePosition, 0);
+            }
+        }
+
+        if (Input::IsKeyHeld(KB_KEY_LEFT_CONTROL))
+        {
+            if (Input::IsKeyPressed(KB_KEY_S))
+            {
+                grid.Serialize("../assets/levels/level.level", Save);
+            }
+            else if (Input::IsKeyPressed(KB_KEY_L))
+            {
+                grid.Serialize("../assets/levels/level.level", Load);
+            }
+            else if (Input::IsKeyPressed(KB_KEY_Y))
+            {
+                grid.Undo();
             }
         }
 
