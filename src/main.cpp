@@ -27,6 +27,7 @@ Grid tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 
 int main()
 {
     grid.EnableHistory();
+    grid.AddToHistory();
 
     for (auto & SelectedImage : SelectedImages)
     {
