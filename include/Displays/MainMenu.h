@@ -5,7 +5,7 @@
 class MainMenu : public Display
 {
 public:
-    MainMenu();
+    MainMenu() = default;
 
     void Update(Window& window) override;
     void Draw(Window& window) override;

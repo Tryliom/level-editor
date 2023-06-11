@@ -12,9 +12,9 @@
 std::vector<Image> SelectedImages =
 {
     Image("../assets/empty.png"),
-    Image("../assets/grass.png"),
-    Image("../assets/dirt.png"),
-    Image("../assets/block.png")
+    Image("../assets/block.png"),
+    Image("../assets/bonus.png"),
+    Image("../assets/start.png"),
 };
 
 const uint32_t width = 1000;
@@ -25,7 +25,7 @@ const uint32_t tileSize = 32;
 int selectedTile;
 Image selectedTileImage;
 
-Editor::Editor() : Display(width, height), _grid(gridWidth, gridHeight, tileSize), _tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100))
+Editor::Editor() : _grid(gridWidth, gridHeight, tileSize), _tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100))
 {
     _grid.EnableHistory();
     _grid.AddToHistory();
@@ -36,11 +36,11 @@ Editor::Editor() : Display(width, height), _grid(gridWidth, gridHeight, tileSize
     }
 
     selectedTileImage = SelectedImages[selectedTile];
-    _tileSelector.SetXOffset(gridWidth * tileSize);
+    _grid.SetYOffset(tileSize);
 
     for (int i = 0; i < Grid::ToImage.size(); i++)
     {
-        _tileSelector.DrawTile(Vector2I(i * tileSize, 0), i);
+	    _tileSelector.SetTile(Vector2I(i * tileSize, 0), i);
     }
 }
 
@@ -62,15 +62,15 @@ void Editor::Update(Window& window)
     else
     {
         _tileSelector.ClearHighlighted();
-        _grid.HighlightTile(mousePosition, selectedTileImage);
+        _grid.HighlightTile(mousePosition, selectedTileImage, false);
 
         if (Input::IsMouseButtonHeld(MOUSE_LEFT))
         {
-            _grid.DrawTile(mousePosition, selectedTile);
+	        _grid.SetTile(mousePosition, selectedTile, false);
         }
         else if (Input::IsMouseButtonHeld(MOUSE_RIGHT))
         {
-            _grid.DrawTile(mousePosition, 0);
+	        _grid.SetTile(mousePosition, 0, false);
         }
     }
 

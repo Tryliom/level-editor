@@ -5,11 +5,6 @@
 #include "Displays/Editor.h"
 #include "Window.h"
 
-const uint32_t width = 640;
-const uint32_t height = 640;
-
-MainMenu::MainMenu() : Display(width, height) {}
-
 void MainMenu::Update(Window& window)
 {
     if (Input::IsKeyPressed(KB_KEY_1))

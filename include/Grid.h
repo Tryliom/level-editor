@@ -10,6 +10,14 @@ enum SerializeMode
     Load
 };
 
+enum class TileType
+{
+	Empty,
+	Block,
+	Bonus,
+	Start
+};
+
 class Grid
 {
 public:
@@ -47,7 +55,7 @@ public:
 
     void HighlightTile(Vector2I position, bool local = true);
     void HighlightTile(Vector2I position, Image image, bool local = true);
-    void DrawTile(Vector2I position, int tileType, bool local = true);
+    void SetTile(Vector2I position, int tileType, bool local = true);
 
     [[nodiscard]] int GetTile(Vector2I position, bool local = true) const;
     [[nodiscard]] bool IsOnTile(Vector2I position, bool local = true) const;
@@ -60,4 +68,8 @@ public:
     void AddToHistory();
 
     void Serialize(const std::string& path, SerializeMode mode);
+
+	void ReplaceAll(int tileType, int newTileType);
+	std::vector<Vector2I> FindAll(int tileType, bool local = true);
+	Vector2I FindFirst(int tileType, bool local = true);
 };

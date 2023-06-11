@@ -11,9 +11,9 @@ Grid::Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighli
     Grid::ToImage =
     {
         Image("../assets/empty.png"),
-        Image("../assets/grass.png"),
-        Image("../assets/dirt.png"),
-        Image("../assets/block.png")
+        Image("../assets/block.png"),
+        Image("../assets/bonus.png"),
+        Image("../assets/start.png"),
     };
 
     this->_width = width;
@@ -137,7 +137,7 @@ void Grid::HighlightTile(Vector2I position, Image image, bool local)
     _highlightImage = image;
 }
 
-void Grid::DrawTile(Vector2I position, int tileType, bool local)
+void Grid::SetTile(Vector2I position, int tileType, bool local)
 {
     const uint32_t gridPosition = ToGridPosition(position, local);
 
@@ -277,4 +277,61 @@ void Grid::AddToHistory()
     {
         _historyIndex++;
     }
+}
+
+void Grid::ReplaceAll(int tileType, int newTileType)
+{
+	AddToHistory();
+
+	for (int i = 0; i < _width * _height; i++)
+	{
+		if (_grid[i] == tileType)
+		{
+			_grid[i] = newTileType;
+		}
+	}
+}
+
+std::vector<Vector2I> Grid::FindAll(int tileType, bool local)
+{
+	std::vector<Vector2I> positions;
+
+	for (int i = 0; i < _width * _height; i++)
+	{
+		if (_grid[i] == tileType)
+		{
+			auto position = Vector2I(i % _width * _tileSize, i / _width * _tileSize);
+
+			if (!local)
+			{
+				position.X += _xOffset;
+				position.Y += _yOffset;
+			}
+
+			positions.push_back(position);
+		}
+	}
+
+	return positions;
+}
+
+Vector2I Grid::FindFirst(int tileType, bool local)
+{
+	for (int i = 0; i < _width * _height; i++)
+	{
+		if (_grid[i] == tileType)
+		{
+			auto position = Vector2I(i % _width * _tileSize, i / _width * _tileSize);
+
+			if (!local)
+			{
+				position.X += _xOffset;
+				position.Y += _yOffset;
+			}
+
+			return position;
+		}
+	}
+
+	return Vector2I(-1, -1);
 }
