@@ -2,7 +2,7 @@ call C:\tools\emsdk\emsdk_env.bat
 
 mkdir bin
 
-call C:\tools\emsdk\upstream\emscripten\em++ src\Grid.cpp src\main.cpp libs\Basic\src\AudioManager.cpp libs\Basic\src\Image.cpp libs\Basic\src\Input.cpp libs\Basic\src\Timer.cpp libs\Basic\src\Utility.cpp libs\Basic\src\Window.cpp ^
+call C:\tools\emsdk\upstream\emscripten\em++ src\Displays\Editor.cpp src\Displays\MainMenu.cpp src\Displays\SnakeGame.cpp src\Grid.cpp src\main.cpp libs\Basic\src\AudioManager.cpp libs\Basic\src\Image.cpp libs\Basic\src\Input.cpp libs\Basic\src\Timer.cpp libs\Basic\src\Utility.cpp libs\Basic\src\Window.cpp libs\Basic\src\Display.cpp ^
     -o bin/game.js ^
     -std=c++20 ^
     -Wall -Wextra ^
@@ -27,5 +27,7 @@ call C:\tools\emsdk\upstream\emscripten\em++ src\Grid.cpp src\main.cpp libs\Basi
     -sEXPORTED_RUNTIME_METHODS=ccall,cwrap ^
     -sASYNCIFY ^
     --no-entry
+
+cd bin
 
 python3 -m http.server 8000

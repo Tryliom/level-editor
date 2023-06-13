@@ -5,6 +5,12 @@
 1. Install [Clang](https://github.com/llvm/llvm-project/releases/download/llvmorg-16.0.0/LLVM-16.0.0-win64.exe)
 2. On CLion, add a new configuration -> system -> clang
 
+## Build
+
+```bash
+git pull submodule --init --recursive
+```
+
 
 ## Run on Clion
 

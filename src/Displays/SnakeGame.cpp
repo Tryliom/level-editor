@@ -113,14 +113,14 @@ void SnakeGame::Draw(Window& window)
 	if (_gameOver)
 	{
 		window.DrawFullRectangle(0, 0, window.Width, window.Height, Utility::ToColor(0, 0, 0, 100));
-		window.DrawText({ .Text = "Game Over!", .Position = { window.Width / 2, window.Height / 2 - 50 }, .Color = Color::Red, .Pivot = Pivot::Center });
-		window.DrawText({ .Text = "Press R to restart", .Position = { window.Width / 2, window.Height / 2 + 50 }, .Color = Color::White, .Pivot = Pivot::Center });
+		window.DrawText({ .Text = "Game Over!", .Position = { window.Width / 2, window.Height / 2 - 50 }, .Color = (int) Color::Red, .Pivot = Pivot::Center });
+		window.DrawText({ .Text = "Press R to restart", .Position = { window.Width / 2, window.Height / 2 + 50 }, .Color = (int) Color::White, .Pivot = Pivot::Center });
 	}
 
 	if (_waitToStart)
 	{
 		window.DrawFullRectangle(0, 0, window.Width, window.Height, Utility::ToColor(0, 0, 0, 100));
-		window.DrawText({ .Text = "Press Space to start", .Position = { window.Width / 2, window.Height / 2 }, .Color = Color::White, .Pivot = Pivot::Center });
+		window.DrawText({ .Text = "Press Space to start", .Position = { window.Width / 2, window.Height / 2 }, .Color = (int) Color::White, .Pivot = Pivot::Center });
 	}
 }
 
