@@ -223,6 +223,8 @@ void SnakeGame::CheckCollision(Window& window)
 
 void SnakeGame::Reset()
 {
+	_snakePositions.clear();
+
 	_grid.SetYOffset(32);
 	_grid.Serialize("../assets/levels/level.level", Load);
 

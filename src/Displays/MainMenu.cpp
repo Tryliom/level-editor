@@ -5,6 +5,11 @@
 #include "Displays/Editor.h"
 #include "Window.h"
 
+MainMenu::MainMenu() : _backgroundGrid(20, 21, 32)
+{
+
+}
+
 void MainMenu::Update(Window& window)
 {
     if (Input::IsKeyPressed(KB_KEY_1))
@@ -19,7 +24,10 @@ void MainMenu::Update(Window& window)
 
 void MainMenu::Draw(Window& window)
 {
-    window.SetBackgroundColor(Color::Black);
-    window.DrawText({ .Text = "Press 1 to play Snake", .Position = { window.Width / 2, 30}, .Pivot = Center });
-    window.DrawText({ .Text = "Press 2 to edit Snake", .Position = { window.Width / 2, 100}, .Pivot = Center });
+	const auto height = window.Height;
+
+    _backgroundGrid.Draw(window);
+
+    window.DrawText({ .Text = "Press 1 to play", .Position = { window.Width / 2, height / 2 - 50}, .Pivot = Center });
+    window.DrawText({ .Text = "Press 2 to edit", .Position = { window.Width / 2, height / 2 + 50}, .Pivot = Center });
 }

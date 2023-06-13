@@ -1,12 +1,17 @@
 #pragma once
 
 #include "Display.h"
+#include "Grid.h"
 
 class MainMenu : public Display
 {
 public:
-    MainMenu() = default;
+    MainMenu();
 
+private:
+	Grid _backgroundGrid;
+
+public:
     void Update(Window& window) override;
     void Draw(Window& window) override;
 };
