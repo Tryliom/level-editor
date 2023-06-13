@@ -8,13 +8,21 @@
 #include "Input.h"
 #include "Displays/MainMenu.h"
 #include "Window.h"
+#include "AudioManager.h"
+
+#ifdef __EMSCRIPTEN__
+#define IMAGE_PATH "assets/"
+#else
+#define IMAGE_PATH "../assets/"
+#endif
+
 
 std::vector<Image> SelectedImages =
 {
-    Image("../assets/empty.png"),
-    Image("../assets/block.png"),
-    Image("../assets/bonus.png"),
-    Image("../assets/start.png"),
+    Image(IMAGE_PATH "empty.png"),
+	Image(IMAGE_PATH "block.png"),
+	Image(IMAGE_PATH "bonus.png"),
+	Image(IMAGE_PATH "start.png"),
 };
 
 const uint32_t width = 1000;
@@ -78,11 +86,11 @@ void Editor::Update(Window& window)
     {
         if (Input::IsKeyPressed(KB_KEY_S))
         {
-            _grid.Serialize("../assets/levels/level.level", Save);
+            _grid.Serialize(IMAGE_PATH "levels/level.level", Save);
         }
         else if (Input::IsKeyPressed(KB_KEY_L))
         {
-            _grid.Serialize("../assets/levels/level.level", Load);
+            _grid.Serialize(IMAGE_PATH "levels/level.level", Load);
         }
         else if (Input::IsKeyPressed(KB_KEY_Y))
         {

@@ -4,10 +4,12 @@
 #include "Displays/SnakeGame.h"
 #include "Displays/Editor.h"
 #include "Window.h"
+#include "AudioManager.h"
 
 MainMenu::MainMenu() : _backgroundGrid(20, 21, 32)
 {
-
+	AudioManager::StopAll();
+	AudioManager::Play(AudioType::MainMenu, true);
 }
 
 void MainMenu::Update(Window& window)

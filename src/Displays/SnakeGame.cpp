@@ -5,8 +5,15 @@
 #include "Window.h"
 #include "Logger.h"
 #include "Timer.h"
+#include "AudioManager.h"
 
-SnakeGame::SnakeGame() : _grid(20, 20, 32), _snakeBodyImage("../assets/snake_part.png"), _snakeHeadImage("../assets/snake_head.png")
+#ifdef __EMSCRIPTEN__
+#define IMAGE_PATH "assets/"
+#else
+#define IMAGE_PATH "../assets/"
+#endif
+
+SnakeGame::SnakeGame() : _grid(20, 20, 32), _snakeBodyImage(IMAGE_PATH "snake_part.png"), _snakeHeadImage(IMAGE_PATH "snake_head.png")
 {
 	Reset();
 }
@@ -21,6 +28,9 @@ void SnakeGame::Update(Window& window)
 	if (Input::IsKeyPressed(KB_KEY_SPACE) && _waitToStart)
 	{
 		_waitToStart = false;
+
+		AudioManager::StopAll();
+		AudioManager::Play(AudioType::Play, true);
 	}
 
 	if (_waitToStart)
@@ -58,12 +68,21 @@ void SnakeGame::Update(Window& window)
 			UpdateSnake();
 			CheckCollision(window);
 		}
+
+		if (_gameOver)
+		{
+			AudioManager::StopAll();
+			AudioManager::Play(AudioType::GameOver, true);
+		}
 	}
 	else
 	{
 		if (Input::IsKeyPressed(KB_KEY_R))
 		{
 			Reset();
+
+			AudioManager::StopAll();
+			AudioManager::Play(AudioType::MainMenu, true);
 		}
 	}
 }
@@ -73,7 +92,7 @@ void SnakeGame::Draw(Window& window)
     window.SetBackgroundColor(Color::Black);
 
 	window.DrawFullRectangle(0, 0, window.Width, 32, Utility::ToColor(129, 133, 255));
-	window.DrawText({ .Text = std::to_string(_score) + " PTS", .Size = 22.f, .Position = { window.Width / 2, 22 }, .Pivot = Pivot::Center });
+	window.DrawText({ .Text = std::to_string(_score) + " PTS", .Size = 22.f, .Position = { window.Width / 2, 25 }, .Pivot = Pivot::Center });
 
 	_grid.Draw(window);
 
@@ -216,6 +235,7 @@ void SnakeGame::CheckCollision(Window& window)
 		// Add a new part to the snake
 		_snakePositions.push_back(_snakePositions[_snakePositions.size() - 1]);
 		_score += 10;
+		AudioManager::Play(AudioType::Egg);
 
 		ChooseEggPosition();
 	}
@@ -226,7 +246,7 @@ void SnakeGame::Reset()
 	_snakePositions.clear();
 
 	_grid.SetYOffset(32);
-	_grid.Serialize("../assets/levels/level.level", Load);
+	_grid.Serialize(IMAGE_PATH "levels/level.level", Load);
 
 	_waitToStart = true;
 	_gameOver = false;
