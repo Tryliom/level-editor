@@ -20,8 +20,8 @@ private:
 	Grid _grid;
 	bool _waitToStart{};
 	std::vector<Vector2F> _snakePositions;
-	Direction _snakeDirection;
-	Direction _beforeUpdateDirection;
+	Direction _snakeDirection { Direction::Down };
+	Direction _beforeUpdateDirection { Direction::Down };
 	float _snakeTimer { 0.f };
 	float _snakeMaxTimer { 1.f / 7.f };
 	std::vector<Vector2I> _eggPossiblePositions;
@@ -38,6 +38,7 @@ private:
 	void CheckCollision(Window& window);
 	void Reset();
 public:
+    void OnStart(Window& window) override;
     void Update(Window& window) override;
     void Draw(Window& window) override;
 };

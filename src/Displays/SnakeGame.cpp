@@ -1,11 +1,10 @@
 #include "Displays/SnakeGame.h"
 
-#include "Displays/MainMenu.h"
 #include "Input.h"
 #include "Window.h"
-#include "Logger.h"
 #include "Timer.h"
 #include "AudioManager.h"
+#include "DisplayManager.h"
 
 #ifdef __EMSCRIPTEN__
 #define IMAGE_PATH "assets/"
@@ -13,16 +12,21 @@
 #define IMAGE_PATH "../assets/"
 #endif
 
-SnakeGame::SnakeGame() : _grid(20, 20, 32), _snakeBodyImage(IMAGE_PATH "snake_part.png"), _snakeHeadImage(IMAGE_PATH "snake_head.png")
+SnakeGame::SnakeGame() :
+    _grid(20, 20, 32),
+    _snakeBodyImage(IMAGE_PATH "snake_part.png"),
+    _snakeHeadImage(IMAGE_PATH "snake_head.png") {}
+
+void SnakeGame::OnStart(Window& window)
 {
-	Reset();
+    Reset();
 }
 
 void SnakeGame::Update(Window& window)
 {
     if (Input::IsKeyPressed(KB_KEY_ESCAPE))
     {
-        window.SetDisplay(new MainMenu());
+        window.SetDisplay(DisplayManager::GetMainMenu());
     }
 
 	if (Input::IsKeyPressed(KB_KEY_SPACE) && _waitToStart)

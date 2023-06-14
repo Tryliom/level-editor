@@ -12,6 +12,7 @@ private:
 	Grid _backgroundGrid;
 
 public:
+    void OnStart(Window& window) override;
     void Update(Window& window) override;
     void Draw(Window& window) override;
 };

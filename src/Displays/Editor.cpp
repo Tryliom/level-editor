@@ -6,9 +6,8 @@
 #include "Image.h"
 #include "Utility.h"
 #include "Input.h"
-#include "Displays/MainMenu.h"
 #include "Window.h"
-#include "AudioManager.h"
+#include "DisplayManager.h"
 
 #ifdef __EMSCRIPTEN__
 #define IMAGE_PATH "assets/"
@@ -33,7 +32,11 @@ const uint32_t tileSize = 32;
 int selectedTile;
 Image selectedTileImage;
 
-Editor::Editor() : _grid(gridWidth, gridHeight, tileSize), _tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100))
+Editor::Editor() :
+    _grid(gridWidth, gridHeight, tileSize),
+    _tileSelector(Grid::ToImage.size(), 1, tileSize, Utility::ToColor(255, 100, 100)) {}
+
+void Editor::OnStart(Window& window)
 {
     _grid.EnableHistory();
     _grid.AddToHistory();
@@ -48,7 +51,7 @@ Editor::Editor() : _grid(gridWidth, gridHeight, tileSize), _tileSelector(Grid::T
 
     for (int i = 0; i < Grid::ToImage.size(); i++)
     {
-	    _tileSelector.SetTile(Vector2I(i * tileSize, 0), i);
+        _tileSelector.SetTile(Vector2I(i * tileSize, 0), i);
     }
 }
 
@@ -102,7 +105,7 @@ void Editor::Update(Window& window)
 
     if (Input::IsKeyPressed(KB_KEY_ESCAPE))
     {
-        window.SetDisplay(new MainMenu());
+        window.SetDisplay(DisplayManager::GetMainMenu());
     }
 }
 
