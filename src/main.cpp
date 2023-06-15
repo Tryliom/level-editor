@@ -1,5 +1,6 @@
 #include "Window.h"
 #include "DisplayManager.h"
+#include "FrameAllocator.h"
 
 int main()
 {
@@ -7,6 +8,7 @@ int main()
     const uint32_t height = 672;
 
     DisplayManager::Init();
+    FrameAllocator::Initialize(1000);
     Window window(width, height);
 
     window.SetDisplay(DisplayManager::GetMainMenu());
