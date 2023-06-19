@@ -28,8 +28,6 @@ int main()
 	AudioManager::AddSample((int) AudioType::GameOver, AUDIO_PATH "gameOver.ogg");
 	AudioManager::AddSample((int) AudioType::Egg, AUDIO_PATH "egg.ogg");
 
-	FrameAllocator::Initialize(1000);
-
     const uint32_t width = 640;
     const uint32_t height = 672;
 
