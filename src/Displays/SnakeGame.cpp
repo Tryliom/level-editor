@@ -21,6 +21,33 @@ SnakeGame::SnakeGame() :
 void SnakeGame::OnStart(Window& window)
 {
     Reset();
+
+	ClearButtons();
+
+	AddButton(
+		Button("Start", Vector2F{ window.Width / 2.f, window.Height / 2.f }, Vector2I{ 150, 48 }),
+		[this](Window& window) {
+			_waitToStart = false;
+
+			AudioManager::StopAll();
+			AudioManager::Play((int) AudioType::Play, true);
+
+			GetButton((int) ButtonType::Start).SetVisible(false);
+			GetButton((int) ButtonType::Restart).SetVisible(false);
+		}
+	);
+	AddButton(
+		Button("Restart", Vector2F{ window.Width / 2.f, window.Height / 2.f + 50.f }, Vector2I{ 150, 48 }),
+		[this](Window& window) {
+			Reset();
+
+			AudioManager::StopAll();
+			AudioManager::Play((int) AudioType::MainMenu, true);
+
+			GetButton((int) ButtonType::Start).SetVisible(false);
+			GetButton((int) ButtonType::Restart).SetVisible(false);
+		}
+	);
 }
 
 void SnakeGame::Update(Window& window)
@@ -30,12 +57,10 @@ void SnakeGame::Update(Window& window)
         window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::MainMenu));
     }
 
-	if (Input::IsKeyPressed(KB_KEY_SPACE) && _waitToStart)
+	if (_waitToStart)
 	{
-		_waitToStart = false;
-
-		AudioManager::StopAll();
-		AudioManager::Play((int) AudioType::Play, true);
+		GetButton((int) ButtonType::Start).SetVisible(true);
+		GetButton((int) ButtonType::Restart).SetVisible(false);
 	}
 
 	if (_waitToStart)
@@ -82,13 +107,8 @@ void SnakeGame::Update(Window& window)
 	}
 	else
 	{
-		if (Input::IsKeyPressed(KB_KEY_R))
-		{
-			Reset();
-
-			AudioManager::StopAll();
-			AudioManager::Play((int) AudioType::MainMenu, true);
-		}
+		GetButton((int) ButtonType::Start).SetVisible(false);
+		GetButton((int) ButtonType::Restart).SetVisible(true);
 	}
 }
 
@@ -119,13 +139,11 @@ void SnakeGame::Draw(Window& window)
 	{
 		window.DrawFullRectangle(0, 0, window.Width, window.Height, Utility::ToColor(0, 0, 0, 100));
 		window.DrawText({ .Text = "Game Over!", .Position = { window.Width / 2, window.Height / 2 - 50 }, .Color = (int) Color::Red, .Pivot = Pivot::Center });
-		window.DrawText({ .Text = "Press R to restart", .Position = { window.Width / 2, window.Height / 2 + 50 }, .Color = (int) Color::White, .Pivot = Pivot::Center });
 	}
 
 	if (_waitToStart)
 	{
 		window.DrawFullRectangle(0, 0, window.Width, window.Height, Utility::ToColor(0, 0, 0, 100));
-		window.DrawText({ .Text = "Press Space to start", .Position = { window.Width / 2, window.Height / 2 }, .Color = (int) Color::White, .Pivot = Pivot::Center });
 	}
 }
 

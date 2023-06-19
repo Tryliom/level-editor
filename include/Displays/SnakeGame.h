@@ -13,6 +13,11 @@ enum class Direction
 
 class SnakeGame : public Display
 {
+	enum class ButtonType
+	{
+		Start, Restart
+	};
+
 public:
 	SnakeGame();
 

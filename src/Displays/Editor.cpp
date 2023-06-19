@@ -54,11 +54,44 @@ void Editor::OnStart(Window& window)
     {
         _tileSelector.SetTile(Vector2I(i * tileSize, 0), i);
     }
+
+	ClearButtons();
+
+	AddButton(
+		Button("Save", Vector2F{ static_cast<float>(window.Width - 50), 15.f }, Vector2I{ 100, 28 }),
+		[this](Window& window) {
+			_grid.Serialize(IMAGE_PATH "levels/level.level", SerializeMode::Save);
+		}
+	);
+	AddButton(
+		Button("Load", Vector2F{ static_cast<float>(window.Width - 160), 15.f }, Vector2I{ 100, 28 }),
+		[this](Window& window) {
+			_grid.Serialize(IMAGE_PATH "levels/level.level", SerializeMode::Load);
+		}
+	);
+	AddButton(
+		Button("Undo", Vector2F{ static_cast<float>(window.Width - 270), 15.f }, Vector2I{ 100, 28 }),
+		[this](Window& window) {
+			_grid.Undo();
+		}
+	);
+	AddButton(
+		Button("Clear", Vector2F{ static_cast<float>(window.Width - 380), 15.f }, Vector2I{ 100, 28 }),
+		[this](Window& window) {
+			_grid.Clear();
+		}
+	);
 }
 
 void Editor::Update(Window& window)
 {
     auto mousePosition = window.GetMousePosition();
+
+	// Check if the actual grid is valid to be saved
+	auto startTiles = _grid.FindAll((int) TileType::Start);
+	auto bonusTiles = _grid.FindAll((int) TileType::Bonus);
+
+	GetButton((int) ButtonType::Save).SetEnabled(startTiles.size() == 1 && bonusTiles.size() >= 5);
 
     if (_tileSelector.IsOnTile(mousePosition, false))
     {
@@ -88,15 +121,7 @@ void Editor::Update(Window& window)
 
     if (Input::IsKeyHeld(KB_KEY_RIGHT_CONTROL) || Input::IsKeyHeld(KB_KEY_LEFT_CONTROL))
     {
-        if (Input::IsKeyPressed(KB_KEY_S))
-        {
-            _grid.Serialize(IMAGE_PATH "levels/level.level", Save);
-        }
-        else if (Input::IsKeyPressed(KB_KEY_L))
-        {
-            _grid.Serialize(IMAGE_PATH "levels/level.level", Load);
-        }
-        else if (Input::IsKeyPressed(KB_KEY_Y))
+        if (Input::IsKeyPressed(KB_KEY_Y))
         {
             _grid.Undo();
         }

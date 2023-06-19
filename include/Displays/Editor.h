@@ -5,6 +5,11 @@
 
 class Editor : public Display
 {
+	enum ButtonType
+	{
+		Save, Load, Undo, Clear
+	};
+
 public:
     Editor();
 
