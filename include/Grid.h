@@ -39,8 +39,8 @@ private:
     bool _useHighlightImage { false };
 
     bool _saveHistory { false };
-    int _maxHistory { 200 };
-    int* _history[200]{};
+    int _maxHistory { 20000 };
+    int* _history[20000]{};
     int _historyIndex { 0 };
 
     [[nodiscard]] uint32_t ToGridPosition(Vector2I position, bool local = true) const;

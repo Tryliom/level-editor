@@ -8,6 +8,7 @@
 #include "Input.h"
 #include "Window.h"
 #include "DisplayManager.h"
+#include "Types.h"
 
 #ifdef __EMSCRIPTEN__
 #define IMAGE_PATH "assets/"
@@ -105,7 +106,7 @@ void Editor::Update(Window& window)
 
     if (Input::IsKeyPressed(KB_KEY_ESCAPE))
     {
-        window.SetDisplay(DisplayManager::GetMainMenu());
+        window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::MainMenu));
     }
 }
 

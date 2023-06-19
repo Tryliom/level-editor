@@ -5,6 +5,7 @@
 #include "Timer.h"
 #include "AudioManager.h"
 #include "DisplayManager.h"
+#include "Types.h"
 
 #ifdef __EMSCRIPTEN__
 #define IMAGE_PATH "assets/"
@@ -26,7 +27,7 @@ void SnakeGame::Update(Window& window)
 {
     if (Input::IsKeyPressed(KB_KEY_ESCAPE))
     {
-        window.SetDisplay(DisplayManager::GetMainMenu());
+        window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::MainMenu));
     }
 
 	if (Input::IsKeyPressed(KB_KEY_SPACE) && _waitToStart)
@@ -34,7 +35,7 @@ void SnakeGame::Update(Window& window)
 		_waitToStart = false;
 
 		AudioManager::StopAll();
-		AudioManager::Play(AudioType::Play, true);
+		AudioManager::Play((int) AudioType::Play, true);
 	}
 
 	if (_waitToStart)
@@ -76,7 +77,7 @@ void SnakeGame::Update(Window& window)
 		if (_gameOver)
 		{
 			AudioManager::StopAll();
-			AudioManager::Play(AudioType::GameOver, true);
+			AudioManager::Play((int) AudioType::GameOver, true);
 		}
 	}
 	else
@@ -86,7 +87,7 @@ void SnakeGame::Update(Window& window)
 			Reset();
 
 			AudioManager::StopAll();
-			AudioManager::Play(AudioType::MainMenu, true);
+			AudioManager::Play((int) AudioType::MainMenu, true);
 		}
 	}
 }
@@ -239,7 +240,7 @@ void SnakeGame::CheckCollision(Window& window)
 		// Add a new part to the snake
 		_snakePositions.push_back(_snakePositions[_snakePositions.size() - 1]);
 		_score += 10;
-		AudioManager::Play(AudioType::Egg);
+		AudioManager::Play((int) AudioType::Egg);
 
 		ChooseEggPosition();
 	}
