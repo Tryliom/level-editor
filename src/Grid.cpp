@@ -35,8 +35,6 @@ Grid::Grid(uint32_t width, uint32_t height, uint32_t tileSize, int defaultHighli
     _hasBeenHighlighted = false;
     this->_defaultHighlightColor = defaultHighlightColor;
 
-    _historyIndex = 0;
-
     Clear();
     ClearHighlighted();
 }
@@ -236,14 +234,14 @@ void Grid::EnableHistory()
 
 void Grid::Undo()
 {
-    if (_historyIndex == 0 || !_saveHistory)
+    if (_history.size() == 0 || !_saveHistory)
     {
         return;
     }
 
-    _historyIndex--;
+    memcpy(_grid, _history.back(), _width * _height * sizeof(int));
 
-    memcpy(_grid, _history[_historyIndex], _width * _height * sizeof(int));
+	_history.pop_back();
 }
 
 void Grid::AddToHistory()
@@ -251,13 +249,13 @@ void Grid::AddToHistory()
     if (!_saveHistory) return;
 
     // Check if the last history is the same as the current grid
-    if (_historyIndex > 0)
+    if (!_history.empty())
     {
         bool isSame = true;
 
         for (uint32_t i = 0; i < _width * _height; i++)
         {
-            if (_history[_historyIndex - 1][i] != _grid[i])
+            if (_history.back()[i] != _grid[i])
             {
                 isSame = false;
                 break;
@@ -267,22 +265,9 @@ void Grid::AddToHistory()
         if (isSame) return;
     }
 
-    if (_historyIndex == _maxHistory - 1)
-    {
-        for (uint32_t i = 0; i < _maxHistory - 1; i++)
-        {
-            _history[i] = _history[i + 1];
-        }
-    }
-
     // Make a copy of the grid
-    _history[_historyIndex] = (int*) malloc(_width * _height * sizeof(int));
-    memcpy(_history[_historyIndex], _grid, _width * _height * sizeof(int));
-
-    if (_historyIndex < _maxHistory - 1)
-    {
-        _historyIndex++;
-    }
+    _history.push_back((int*) malloc(_width * _height * sizeof(int)));
+    memcpy(_history.back(), _grid, _width * _height * sizeof(int));
 }
 
 void Grid::ReplaceAll(int tileType, int newTileType)

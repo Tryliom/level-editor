@@ -39,9 +39,7 @@ private:
     bool _useHighlightImage { false };
 
     bool _saveHistory { false };
-    int _maxHistory { 20000 };
-    int* _history[20000]{};
-    int _historyIndex { 0 };
+    std::vector<int*> _history;
 
     [[nodiscard]] uint32_t ToGridPosition(Vector2I position, bool local = true) const;
 
