@@ -2,7 +2,7 @@ call C:\tools\emsdk\emsdk_env.bat
 
 mkdir bin
 
-call C:\tools\emsdk\upstream\emscripten\em++ src\Displays\Editor.cpp src\Displays\MainMenu.cpp src\Displays\SnakeGame.cpp src\Grid.cpp src\main.cpp libs\Basic\src\AudioManager.cpp libs\Basic\src\Image.cpp libs\Basic\src\Input.cpp libs\Basic\src\Timer.cpp libs\Basic\src\Utility.cpp libs\Basic\src\Window.cpp libs\Basic\src\Display.cpp ^
+call C:\tools\emsdk\upstream\emscripten\em++ src\Displays\Editor.cpp src\Displays\MainMenu.cpp src\Displays\SnakeGame.cpp src\Grid.cpp src\main.cpp libs\Basic\src\AudioManager.cpp libs\Basic\src\Image.cpp libs\Basic\src\Input.cpp libs\Basic\src\Timer.cpp libs\Basic\src\Utility.cpp libs\Basic\src\Window.cpp libs\Basic\src\Display.cpp libs\Basic\src\DisplayManager.cpp ^
     -o bin/game.js ^
     -std=c++20 ^
     -Wall -Wextra ^

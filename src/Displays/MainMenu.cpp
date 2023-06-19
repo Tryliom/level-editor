@@ -12,27 +12,24 @@ void MainMenu::OnStart(Window& window)
 {
     AudioManager::StopAll();
     AudioManager::Play((int) AudioType::MainMenu, true);
-}
 
+	ClearButtons();
 
-void MainMenu::Update(Window& window)
-{
-    if (Input::IsKeyPressed(KB_KEY_1))
-    {
-        window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::SnakeGame));
-    }
-    else if (Input::IsKeyPressed(KB_KEY_2))
-    {
-        window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::Editor));
-    }
+	AddButton(
+		Button("Play", Vector2F{ static_cast<float>(window.Width / 2), static_cast<float>(window.Height / 2 - 50) }, Vector2I{ 200, 50 }),
+		[](Window& window) {
+			window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::SnakeGame));
+		}
+	);
+	AddButton(
+		Button("Edit", Vector2F{ static_cast<float>(window.Width / 2), static_cast<float>(window.Height / 2 + 50) }, Vector2I{ 200, 50 }),
+		[](Window& window) {
+			window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::Editor));
+		}
+	);
 }
 
 void MainMenu::Draw(Window& window)
 {
-	const auto height = window.Height;
-
     _backgroundGrid.Draw(window);
-
-    window.DrawText({ .Text = "Press 1 to play", .Position = { window.Width / 2, height / 2 - 50}, .Pivot = Center });
-    window.DrawText({ .Text = "Press 2 to edit", .Position = { window.Width / 2, height / 2 + 50}, .Pivot = Center });
 }
