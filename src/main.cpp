@@ -5,6 +5,8 @@
 #include "Displays/MainMenu.h"
 #include "Displays/SnakeGame.h"
 #include "Displays/Editor.h"
+#include "FrameAllocator.h"
+#include "Logger.h"
 
 #ifdef __EMSCRIPTEN__
 #define AUDIO_PATH "assets/audio/"
@@ -30,12 +32,18 @@ int main()
     const uint32_t width = 640;
     const uint32_t height = 672;
 
+    FrameAllocator::Initialize(1024 * 1024 * 10);
+
     Window window(width, height);
 
     window.SetDisplay(DisplayManager::GetDisplay((int) DisplayType::MainMenu));
 
     do {
         window.Update();
+
+        LOG(FrameAllocator::Format("This log is useless but I can show you at least that godly number: %i", 666));
+
+        FrameAllocator::OnFrameEnd();
     }
     while (window.IsOpen());
 }

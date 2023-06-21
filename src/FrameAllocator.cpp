@@ -32,4 +32,43 @@ namespace FrameAllocator
     {
         usedMemory = 0;
     }
+
+    char* Format(const char* format, ...)
+    {
+        va_list args;
+        va_start(args, format); // <- this says: the variable argument list starts after the argument "format"
+
+        size_t remaining = allocatedMemory - usedMemory;
+        char* buffer = (char*) memory + usedMemory;
+
+        int len = vsnprintf(buffer, remaining, format, args); // use the vsnprintf version, to which we can pass a va_list
+
+        usedMemory += len + 1;
+
+        va_end(args);
+
+        if (len + 1 > remaining) {
+            LOG("FrameAllocator: Not enough memory");
+            exit(1);
+        }
+
+        return buffer;
+    }
+
+    char* FormatV(const char* format, va_list args)
+    {
+        size_t remaining = allocatedMemory - usedMemory;
+        char* buffer = (char*) memory + usedMemory;
+
+        int len = vsnprintf(buffer, remaining, format, args); // use the vsnprintf version, to which we can pass a va_list
+
+        usedMemory += len + 1;
+
+        if (len + 1 > remaining) {
+            LOG("FrameAllocator: Not enough memory");
+            exit(1);
+        }
+
+        return buffer;
+    }
 }
